@@ -1,82 +1,43 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Título de la aplicación
 st.title("Análisis Estadístico de Datos CSV")
 
-# Subir archivo CSV
-uploaded_file = st.file_uploader("Sube un archivo CSV", type=["csv"])
+# Generar datos de prueba
+data = {
+    "Nombre": ["Juan", "Maria", "Pedro", "Laura", "Carlos", "Ana", "Luis", "Sofia", "Jorge", "Diana"],
+    "Edad": [28, 34, 45, 29, 30, 40, 35, 27, 50, 33],
+    "Salario": [50000, 60000, 75000, 55000, 52000, 80000, 58000, 48000, 90000, 62000],
+    "Genero": ["Masculino", "Femenino", "Masculino", "Femenino", "Masculino", "Femenino", "Masculino", "Femenino", "Masculino", "Femenino"],
+    "Departamento": ["Ventas", "Marketing", "IT", "Ventas", "Marketing", "IT", "Ventas", "Marketing", "IT", "Ventas"]
+}
 
-if uploaded_file is not None:
-    # Leer el archivo CSV
-    df = pd.read_csv(uploaded_file)
-    
-    # Mostrar el dataframe original
-    st.write("### DataFrame Original")
-    st.write(df)
-    
-    # Generar estadísticas descriptivas
-    st.write("### Estadísticas Descriptivas")
-    st.write(df.describe())
-    
-    # Mostrar información adicional
-    st.write("### Información Adicional")
-    st.write(f"Número de filas: {df.shape[0]}")
-    st.write(f"Número de columnas: {df.shape[1]}")
-    st.write("Tipos de datos:")
-    st.write(df.dtypes)
-    
-    # Mostrar valores nulos por columna
-    st.write("### Valores Nulos por Columna")
-    st.write(df.isnull().sum())
-    
-    # Mostrar correlación entre variables numéricas
+df = pd.DataFrame(data)
+
+# Mostrar el dataframe original
+st.write("### DataFrame Original")
+st.write(df)
+
+# Generar estadísticas descriptivas (solo para columnas numéricas)
+st.write("### Estadísticas Descriptivas")
+st.write(df.describe(include='number'))  # Filtra solo columnas numéricas
+
+# Mostrar información adicional
+st.write("### Información Adicional")
+st.write(f"Número de filas: {df.shape[0]}")
+st.write(f"Número de columnas: {df.shape[1]}")
+st.write("Tipos de datos:")
+st.write(df.dtypes)
+
+# Mostrar valores nulos por columna
+st.write("### Valores Nulos por Columna")
+st.write(df.isnull().sum())
+
+# Filtrar solo columnas numéricas para la matriz de correlación
+columnas_numericas = df.select_dtypes(include=['number']).columns
+if len(columnas_numericas) >= 2:
     st.write("### Matriz de Correlación")
-    st.write(df.corr())
-    
-    # Seleccionar una columna numérica para el análisis de outliers
-    columnas_numericas = df.select_dtypes(include=['float64', 'int64']).columns
-    columna_seleccionada = st.selectbox("Selecciona una columna numérica para analizar outliers", columnas_numericas)
-    
-    if columna_seleccionada:
-        # Calcular los límites para detectar outliers
-        Q1 = df[columna_seleccionada].quantile(0.25)
-        Q3 = df[columna_seleccionada].quantile(0.75)
-        IQR = Q3 - Q1
-        limite_inferior = Q1 - 1.5 * IQR
-        limite_superior = Q3 + 1.5 * IQR
-        
-        # Identificar outliers
-        outliers = df[(df[columna_seleccionada] < limite_inferior) | (df[columna_seleccionada] > limite_superior)]
-        
-        # Mostrar los límites y los outliers
-        st.write(f"Límite inferior: {limite_inferior}")
-        st.write(f"Límite superior: {limite_superior}")
-        st.write("### Valores Atípicos (Outliers)")
-        st.write(outliers)
-        
-        # Crear gráficos
-        st.write("### Gráficos de Análisis de Outliers")
-        
-        # Gráfico de caja (boxplot)
-        st.write("#### Diagrama de Caja (Boxplot)")
-        fig, ax = plt.subplots()
-        sns.boxplot(x=df[columna_seleccionada], ax=ax)
-        ax.set_title(f"Boxplot de {columna_seleccionada}")
-        st.pyplot(fig)
-        
-        # Gráfico de dispersión con límites
-        st.write("#### Gráfico de Dispersión con Límites")
-        fig, ax = plt.subplots()
-        sns.scatterplot(x=df.index, y=df[columna_seleccionada], ax=ax, color='blue', label='Datos')
-        ax.axhline(limite_superior, color='red', linestyle='--', label='Límite Superior')
-        ax.axhline(limite_inferior, color='green', linestyle='--', label='Límite Inferior')
-        ax.scatter(outliers.index, outliers[columna_seleccionada], color='red', label='Outliers')
-        ax.set_title(f"Scatter Plot de {columna_seleccionada} con Outliers")
-        ax.legend()
-        st.pyplot(fig)
-        
+    st.write(df[columnas_numericas].corr())
 else:
-    st.write("Por favor, sube un archivo CSV para comenzar el análisis.")
+    st.write("⚠️ No hay suficientes columnas numéricas para calcular la correlación.")
