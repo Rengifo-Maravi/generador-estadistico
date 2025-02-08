@@ -7,7 +7,7 @@ import seaborn as sns
 st.title("Análisis Estadístico de Datos en formato CSV")
 
 # Subir archivo CSV
-uploaded_file = st.file_uploader("Sube un archivo CSV donde en la primera fila esten el nombre de las variables", type=["csv"])
+uploaded_file = st.file_uploader("Sube un archivo CSV donde en la primera fila esten los nombres de las variables", type=["csv"])
 
 if uploaded_file is not None:
     # Leer el archivo CSV
@@ -79,4 +79,4 @@ if uploaded_file is not None:
         st.pyplot(fig)
         
 else:
-    st.write("sube un archivo CSV donde la primera en la primera columna este el nombre de todas las variables, por favor para comenzar el análisis.")
+    st.write("Por favor, sube un archivo CSV donde en la primera esten los nombre de todas las variables.")
