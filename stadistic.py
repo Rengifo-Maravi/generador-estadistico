@@ -79,4 +79,4 @@ if uploaded_file is not None:
         st.pyplot(fig)
         
 else:
-    st.write("Por favor, sube un archivo CSV para comenzar el análisis.")
+    st.write("sube un archivo CSV donde la primera en la primera columna este el nombre de todas las variables, por favor para comenzar el análisis.")
