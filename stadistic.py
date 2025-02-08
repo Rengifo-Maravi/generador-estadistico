@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Título de la aplicación
-st.title("Análisis Estadístico de Datos CSV")
+st.title("Análisis Estadístico de Datos en formato CSV")
 
 # Subir archivo CSV
-uploaded_file = st.file_uploader("Sube un archivo CSV", type=["csv"])
+uploaded_file = st.file_uploader("Sube un archivo CSV donde en la primera fila esten el nombre de las variables", type=["csv"])
 
 if uploaded_file is not None:
     # Leer el archivo CSV
